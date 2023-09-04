@@ -60,6 +60,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 
 /** An activity that plays media using {@link ExoPlayer}. */
 public class PlayerActivity extends AppCompatActivity
@@ -93,6 +96,12 @@ public class PlayerActivity extends AppCompatActivity
 
   @Nullable private AdsLoader clientSideAdsLoader;
 
+  private static final CookieManager DEFAULT_COOKIE_MANAGER;
+  static {
+    DEFAULT_COOKIE_MANAGER = new CookieManager();
+    DEFAULT_COOKIE_MANAGER.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+  }
+
   // TODO: Annotate this and serverSideAdsLoaderState below with @OptIn when it can be applied to
   // fields (needs http://r.android.com/2004032 to be released into a version of
   // androidx.annotation:annotation-experimental).
@@ -107,7 +116,10 @@ public class PlayerActivity extends AppCompatActivity
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     dataSourceFactory = DemoUtil.getDataSourceFactory(/* context= */ this);
-
+    DEFAULT_COOKIE_MANAGER.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+    if (CookieHandler.getDefault() != DEFAULT_COOKIE_MANAGER) {
+      CookieHandler.setDefault(DEFAULT_COOKIE_MANAGER);
+    }
     setContentView();
     debugRootView = findViewById(R.id.controls_root);
     debugTextView = findViewById(R.id.debug_text_view);

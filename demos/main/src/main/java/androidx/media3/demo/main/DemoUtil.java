@@ -92,14 +92,14 @@ public final class DemoUtil {
         context = context.getApplicationContext();
         @Nullable CronetEngine cronetEngine = CronetUtil.buildCronetEngine(context);
         if (cronetEngine != null) {
-          httpDataSourceFactory =
-              new CronetDataSource.Factory(cronetEngine, Executors.newSingleThreadExecutor());
+          httpDataSourceFactory = new CronetDataSource.Factory(cronetEngine, Executors.newSingleThreadExecutor());
+          httpDataSourceFactory.createDataSource();
         }
       }
       if (httpDataSourceFactory == null) {
         // We don't want to use Cronet, or we failed to instantiate a CronetEngine.
         CookieManager cookieManager = new CookieManager();
-        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ORIGINAL_SERVER);
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
         httpDataSourceFactory = new DefaultHttpDataSource.Factory();
       }
